@@ -10,7 +10,7 @@ services:
     image: docker.elastic.co/beats/filebeat:5.5.1
     volumes:
       - ./mongo/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./mongo/input.log:/input.log
+      - ./mongo/given.log:/given.log
   busybox:
     image: busybox
     command: cat

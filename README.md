@@ -45,7 +45,7 @@ logstash configuration.
 ![image](http://i.imgur.com/hQm9yAb.gif)
 
 Example tests are in the `__tests__` directory.
-To add a tests, simply add a new directory with the given input `input.log`, the ETL configuration `logstash.conf`, and the expected output `output.log`.
+To add a tests, simply add a new directory with the given input `given.log`, the ETL configuration `logstash.conf`, and the expected output `output.log`.
 
 ## Credits
 This repository is based upon the logstash test runner that you may find here : https://github.com/agolo/logstash-test-runner
@@ -65,11 +65,11 @@ This repository is based upon the logstash test runner that you may find here : 
 ```sh
 __tests__
   crawlers
-    input.log
+    given.log
     logstash.conf
     output.log
   mongo
-    input.log
+    given.log
     logstash.conf
     output.log
   # ...
