@@ -45,6 +45,6 @@ if (output.length) {
   process.stderr.write(output + '\n')
   process.exit(1)
 } else {
-  console.log(`${program.compareFiles.join(' and ')} are identitcal`)
+  console.log(`${program.compareFiles.join(' and ')} are identical`)
   process.exit(0)
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # set -x
-set -euo pipefail
+set -eo pipefail
 
 # COLORS
 YELLOW='\033[0;33m'
@@ -11,13 +11,7 @@ NC='\033[0m' # No Color
 TEST_RESULT_FILE="test_output.log"
 TEST_PARENT_DIRECTORY=$1
 
-if [ ! -z "${2:-}" ]; then
-    TEST_LOGSTASH_IMAGE=$2
-else
-    TEST_LOGSTASH_IMAGE="docker.elastic.co/logstash/logstash:5.5.1"
-fi
-
-declare -A benchmarks
+TEST_LOGSTASH_IMAGE="docker.elastic.co/logstash/logstash:7.4.2"
 
 spinner() {
   spin='-\|/'
@@ -47,7 +41,7 @@ log() {
     SYMBOL="⏰"
     COLOR=$YELLOW
     CONTENT="time spent"
-    TIME=${benchmarks[$TEST_NAME]}
+    TIME="N/A"
   else
     SYMBOL="𝗫"
     COLOR=$RED
@@ -78,30 +72,23 @@ logstashTest() {
   wait $test_pid
   test_status=$?
   END=$(date +%s)
-  DIFF=$(( $END - $START ))
-  benchmarks[$TEST_DIRECTORY]="${DIFF}s"
+  DIFF="$(( $END - $START ))"
 
   # here we ignore comparison of timestamp fields. You can ignore any other fields you need to
-  [ "$test_status" = "0" ] && ./log-diff.js -i '@timestamp,timestamp' -c "$TEST_DIRECTORY/output.log,$TEST_RESULT_FILE"
+  [ "$test_status" = "0" ] && ./log-diff.js -i '@timestamp,timestamp,@version' -c "$TEST_DIRECTORY/output.log,$TEST_RESULT_FILE"
 }
-
-# TODO: Check if docker is running
-# if ! docker info 2&>1 > /dev/null
-# then
-#   log fail "docker might not be running"
-#   false
-# fi
 
 # RUN TESTS
 EXIT_CODE=0
 TESTS_DIRECTORIES="$TEST_PARENT_DIRECTORY/*"
-declare -A results
+declare -a results
 for d in $TESTS_DIRECTORIES ; do
     echo "Testing $d"
     logstashTest "$d"
-    results[$d]="$?"
+    #results[$d]="$?"
 
-    if [[ ${results[$d]} == 0 ]]
+    #if [[ ${results[$d]} == 0 ]]
+    if [[ $? == 0 ]]
     then
       log time "$d"
       log pass "$d"
@@ -113,24 +100,24 @@ for d in $TESTS_DIRECTORIES ; do
 done
 
 # PRINT RESULTS
-echo ""
-echo "TEST SUMMARY"
-echo "------------"
-for K in "${!results[@]}"
-do
-  if [[ ${results[$K]} == 0 ]]
-  then
-    log pass "$K ${benchmarks[$K]}"
-  else
-    log fail "$K ${benchmarks[$K]}"
-    EXIT_CODE=1
-  fi
-done
-
-if [[ $EXIT_CODE == 0 ]]
-then
-  log pass "All tests"
-else
-  log fail "Some tests"
-fi
-exit $EXIT_CODE
+#echo ""
+#echo "TEST SUMMARY"
+#echo "------------"
+#for K in "${!results[@]}"
+#do
+#  if [[ ${results[$K]} == 0 ]]
+#  then
+#    log pass "$K"
+#  else
+#    log fail "$K"
+#    EXIT_CODE=1
+#  fi
+#done
+#
+#if [[ $EXIT_CODE == 0 ]]
+#then
+#  log pass "All tests"
+#else
+#  log fail "Some tests"
+#fi
+#exit $EXIT_CODE
