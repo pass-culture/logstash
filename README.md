@@ -47,6 +47,9 @@ logstash configuration.
 Example tests are in the `__tests__` directory.
 To add a tests, simply add a new directory with the given input `input.log`, the ETL configuration `logstash.conf`, and the expected output `output.log`.
 
+## Credits
+This repository is based upon the logstash test runner that you may find here : https://github.com/agolo/logstash-test-runner
+
 ## Prerequisites
 
 * NodeJS > v8
