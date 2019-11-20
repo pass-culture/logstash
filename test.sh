@@ -62,7 +62,7 @@ logstashTest() {
     -i \
     -v "$PWD/config/logstash.yml":/usr/share/logstash/config/logstash.yml \
     -v "$PWD/logstash.conf":/usr/share/logstash/pipeline/logstash.conf \
-    -v "$PWD/logstash-common.conf":/usr/share/logstash/pipeline/logstash-common.conf \
+    -v "$PWD/config/logstash-common.conf":/usr/share/logstash/pipeline/logstash-common.conf \
     -v "$PWD/$TEST_RESULT_FILE":/output.log \
     "$TEST_LOGSTASH_IMAGE" < "$TEST_DIRECTORY/given.log" 2>/dev/null &
 
