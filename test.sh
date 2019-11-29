@@ -98,26 +98,3 @@ for d in $TESTS_DIRECTORIES ; do
       EXIT_CODE=1
     fi
 done
-
-# PRINT RESULTS
-#echo ""
-#echo "TEST SUMMARY"
-#echo "------------"
-#for K in "${!results[@]}"
-#do
-#  if [[ ${results[$K]} == 0 ]]
-#  then
-#    log pass "$K"
-#  else
-#    log fail "$K"
-#    EXIT_CODE=1
-#  fi
-#done
-#
-#if [[ $EXIT_CODE == 0 ]]
-#then
-#  log pass "All tests"
-#else
-#  log fail "Some tests"
-#fi
-#exit $EXIT_CODE

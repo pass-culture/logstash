@@ -1,3 +1,5 @@
+# PC Logstash
+
 # Logstash boilerplate
 
 This repository contains a boilerplate for deploying logstash on Scalingo.
@@ -83,9 +85,6 @@ __tests__
 
 # Run tests using the official Logstash 5.5.1 docker image
 ./test.sh __tests__
-
-# Run tests using a locally built logstash docker image
-./test.sh __tests__ my_logstash_image:mytag
 ```
 
 NOTE: Multiline logs in logstash need translate in reverse to filebeat in terms of `multiline.match` from `previous` => `after` and `next` => `before`.
