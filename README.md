@@ -81,10 +81,11 @@ __tests__
 * Run your tests
 
 ```sh
-# ./test.sh <test-parent-directory> [<logstash-docker-image>]
-
-# Run tests using the official Logstash 5.5.1 docker image
+# To run all the tests within the __tests__ folder
 ./test.sh __tests__
+
+# To run a specific test
+./test.sh __tests__/folder
 ```
 
 NOTE: Multiline logs in logstash need translate in reverse to filebeat in terms of `multiline.match` from `previous` => `after` and `next` => `before`.

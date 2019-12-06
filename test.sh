@@ -18,9 +18,8 @@ spinner() {
   pid="$1"
 
   i=0
-  while kill -0 "$pid" 2>/dev/null
-  do
-    i=$(( (i+1) %4 ))
+  while kill -0 "$pid" 2>/dev/null; do
+    i=$(((i + 1) % 4))
     printf "\r%s" "${spin:$i:1}"
     sleep .1
   done
@@ -31,13 +30,11 @@ log() {
   TEST_NAME=$2
   TIME=""
 
-  if [[ $CASE == "pass" ]]
-  then
+  if [[ $CASE == "pass" ]]; then
     SYMBOL="✔"
     COLOR=$GREEN
     CONTENT="passed"
-  elif [[ $CASE == "time" ]]
-  then
+  elif [[ $CASE == "time" ]]; then
     SYMBOL="⏰"
     COLOR=$YELLOW
     CONTENT="time spent"
@@ -52,7 +49,7 @@ log() {
 
 logstashTest() {
   TEST_DIRECTORY="$1"
-  echo '' > $TEST_RESULT_FILE
+  echo '' >$TEST_RESULT_FILE
   chmod 777 $TEST_RESULT_FILE
 
   START=$(date +%s)
@@ -64,7 +61,7 @@ logstashTest() {
     -v "$PWD/logstash.conf":/usr/share/logstash/pipeline/logstash.conf \
     -v "$PWD/config/logstash-common.conf":/usr/share/logstash/pipeline/logstash-common.conf \
     -v "$PWD/$TEST_RESULT_FILE":/output.log \
-    "$TEST_LOGSTASH_IMAGE" < "$TEST_DIRECTORY/given.log" 2>/dev/null &
+    "$TEST_LOGSTASH_IMAGE" <"$TEST_DIRECTORY/given.log" 2>/dev/null &
 
   # SPINNER
   test_pid=$!
@@ -72,29 +69,46 @@ logstashTest() {
   wait $test_pid
   test_status=$?
   END=$(date +%s)
-  DIFF="$(( $END - $START ))"
+  DIFF="$(($END - $START))"
 
   # here we ignore comparison of timestamp fields. You can ignore any other fields you need to
   [ "$test_status" = "0" ] && ./log-diff.js -i '@timestamp,timestamp,@version' -c "$TEST_DIRECTORY/output.log,$TEST_RESULT_FILE"
 }
 
+declare -a TEST_FOLDERS
+getTestFolders() {
+  TEST_PATH="$1/*"
+
+  for d in $TEST_PATH; do
+    if [[ -d $d ]]; then
+      TEST_FOLDERS[${#TEST_FOLDERS[@]}]="$d"
+    fi
+  done
+
+  if [ -z "$TEST_FOLDERS" ]; then
+    TEST_FOLDERS+=($TEST_PARENT_DIRECTORY)
+  fi
+}
+
 # RUN TESTS
 EXIT_CODE=0
-TESTS_DIRECTORIES="$TEST_PARENT_DIRECTORY/*"
 declare -a results
-for d in $TESTS_DIRECTORIES ; do
-    echo "Testing $d"
-    logstashTest "$d"
-    #results[$d]="$?"
+getTestFolders $TEST_PARENT_DIRECTORY
 
-    #if [[ ${results[$d]} == 0 ]]
-    if [[ $? == 0 ]]
-    then
-      log time "$d"
-      log pass "$d"
-    else
-      log time "$d"
-      log fail "$d"
-      EXIT_CODE=1
-    fi
+for d in "${TEST_FOLDERS[@]}"; do
+
+  echo "\nTesting $d"
+  logstashTest "$d"
+
+  #results[$d]="$?"
+
+  #if [[ ${results[$d]} == 0 ]]
+  if [[ $? == 0 ]]; then
+    log time "$d"
+    log pass "$d"
+  else
+    log time "$d"
+    log fail "$d"
+    EXIT_CODE=1
+  fi
 done
