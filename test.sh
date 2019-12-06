@@ -97,7 +97,7 @@ getTestFolders $TEST_PARENT_DIRECTORY
 
 for d in "${TEST_FOLDERS[@]}"; do
 
-  echo "\nTesting $d"
+  echo "Testing $d"
   logstashTest "$d"
 
   #results[$d]="$?"
