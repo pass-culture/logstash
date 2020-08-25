@@ -1,0 +1,11 @@
+---
+client:
+  hosts:
+    - ${ELASTICSEARCH_HOST}
+  http_auth: ${ELASTICSEARCH_AUTH}
+  use_ssl: True
+  ssl_no_validate: True
+logging:
+  loglevel: INFO
+  logfile:
+  logformat: default
