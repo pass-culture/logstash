@@ -1,0 +1,38 @@
+---
+version: 2.1
+jobs:
+  purge-elasticsearch-indices-staging:
+    docker:
+      - image: ubuntu:20.04
+    steps:
+      - checkout
+      - run:
+          command: |
+            apt update && apt install curl -y
+            curl -O https://cli-dl.scalingo.com/install && bash install
+            scalingo --app pc-ap-logstash --region osc-fr1 run "curator --config curator/curator.yml curator/log-clean.yml"
+
+  purge-elasticsearch-indices-production:
+    docker:
+      - image: ubuntu:20.04
+    steps:
+      - checkout
+      - run:
+          command: |
+            apt update && apt install curl -y
+            curl -O https://cli-dl.scalingo.com/install && bash install
+            scalingo --app pc-logstash --region osc-fr1 run "curator --config curator/curator.yml curator/log-clean.yml"
+
+workflows:
+  version: 2.1
+  purge-elasticsearch-indices-every-nights:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - purge-elasticsearch-indices-staging
+      - purge-elasticsearch-indices-production
