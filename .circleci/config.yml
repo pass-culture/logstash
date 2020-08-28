@@ -10,6 +10,7 @@ jobs:
           command: |
             apt update && apt install curl -y
             curl -O https://cli-dl.scalingo.com/install && bash install
+            scalingo login --api-token $SCALINGO_API_TOKEN
             scalingo --app pc-ap-logstash --region osc-fr1 run "curator --config curator/curator.yml curator/log-clean.yml"
 
   purge-elasticsearch-indices-production:
@@ -21,6 +22,7 @@ jobs:
           command: |
             apt update && apt install curl -y
             curl -O https://cli-dl.scalingo.com/install && bash install
+            scalingo login --api-token $SCALINGO_API_TOKEN
             scalingo --app pc-logstash --region osc-fr1 run "curator --config curator/curator.yml curator/log-clean.yml"
 
 workflows:
