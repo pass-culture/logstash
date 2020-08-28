@@ -20,10 +20,42 @@ jobs:
       - checkout
       - run:
           command: |
-            apt update && apt install curl -y
+            apt update && apt install curl git -y
             curl -O https://cli-dl.scalingo.com/install && bash install
             scalingo login --api-token $SCALINGO_API_TOKEN
             scalingo --app pc-logstash --region osc-fr1 run "curator --config curator/curator.yml curator/log-clean.yml"
+
+  deploy-logstash-staging:
+    docker:
+      - image: ubuntu:20.04
+    steps:
+      - checkout
+      - run:
+          command: |
+            mkdir ~/.ssh/
+            echo "|1|2iu67lbp9dHzmTIdVBUTifL7G14=|lzJG9K3n0d0UvAHRBZyUGoWTHqs= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS+0l0PXnJ/bAtBAXwV/WUMTD2FqaoY07Bsvgh0b3yHnfaPHrxIRneX4V/8v1WMHZbNIfF6mPHbjdzk4cW4s80wmPbi7L+PpruWqCvhv40UBAfcQpyM7LU49V54PsAkWusw5I9wa2uwt2rj4COlV9abdtjkm8xDCdtm9AMw257gEYMxxu6mtki8EilzdVeq7Ov1CadYUj9NOlVQ2kmZdDJliYFc+DvTlMVYsm5PjeA8R3WzPwT5stQgT9u0a+6bti9M0mQR/0LLX3IHSSb2kpj1sQT49jYRM6IRCF5NmK9vQZ2qtqcbvgJBJtrKCfejwMHYcwOyo5dvoYYuzdWFK0o3Y9G6qMjWcuGY0mk8P4sfZVgHmwYZRXYygonDFxY3G3oOust4OTos0P6a6Ew1ayhGu/PKGqrh9vtIibjveUbB58MbLNC+hhaYBakViGRq7iVrJmgiaHudjLU6yGqFAx9oGDoTo4DpeuUfq1rFQ+xdFf8vb12ppZt2UJce5CjiOCyZynjJwVu8sm35YW/7MW4oCGxur92OtA2TqL6ABKX6G/SA7511GDbahKfHk2enKXxkXtt/GVCWCC1v5oWYniBEbnLmYmcqCkgbqjGZU8Ir7PedvHrWanZL4OzPSAw7FKxUSgsKsXM2TuVoVBCh9ALOUtsLk+HA4K4Rcbm8lD3Cw==" >> ~/.ssh/known_hosts
+            echo "|1|Fn/bfEPkPsUH/ULE0akBo0OGXIc=|303i73M1syNvvwQuC3OiQb8KrB8= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS+0l0PXnJ/bAtBAXwV/WUMTD2FqaoY07Bsvgh0b3yHnfaPHrxIRneX4V/8v1WMHZbNIfF6mPHbjdzk4cW4s80wmPbi7L+PpruWqCvhv40UBAfcQpyM7LU49V54PsAkWusw5I9wa2uwt2rj4COlV9abdtjkm8xDCdtm9AMw257gEYMxxu6mtki8EilzdVeq7Ov1CadYUj9NOlVQ2kmZdDJliYFc+DvTlMVYsm5PjeA8R3WzPwT5stQgT9u0a+6bti9M0mQR/0LLX3IHSSb2kpj1sQT49jYRM6IRCF5NmK9vQZ2qtqcbvgJBJtrKCfejwMHYcwOyo5dvoYYuzdWFK0o3Y9G6qMjWcuGY0mk8P4sfZVgHmwYZRXYygonDFxY3G3oOust4OTos0P6a6Ew1ayhGu/PKGqrh9vtIibjveUbB58MbLNC+hhaYBakViGRq7iVrJmgiaHudjLU6yGqFAx9oGDoTo4DpeuUfq1rFQ+xdFf8vb12ppZt2UJce5CjiOCyZynjJwVu8sm35YW/7MW4oCGxur92OtA2TqL6ABKX6G/SA7511GDbahKfHk2enKXxkXtt/GVCWCC1v5oWYniBEbnLmYmcqCkgbqjGZU8Ir7PedvHrWanZL4OzPSAw7FKxUSgsKsXM2TuVoVBCh9ALOUtsLk+HA4K4Rcbm8lD3Cw==" >> ~/.ssh/known_hosts
+            apt update && apt install curl git -y
+            curl -O https://cli-dl.scalingo.com/install && bash install
+            scalingo login --api-token $SCALINGO_API_TOKEN
+            git remote add pc-ap-logstash git@ssh.osc-fr1.scalingo.com:pc-ap-logstash.git
+            git push -f pc-ap-logstash master
+
+  deploy-logstash-production:
+    docker:
+      - image: ubuntu:20.04
+    steps:
+      - checkout
+      - run:
+          command: |
+            mkdir ~/.ssh/
+            echo "|1|2iu67lbp9dHzmTIdVBUTifL7G14=|lzJG9K3n0d0UvAHRBZyUGoWTHqs= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS+0l0PXnJ/bAtBAXwV/WUMTD2FqaoY07Bsvgh0b3yHnfaPHrxIRneX4V/8v1WMHZbNIfF6mPHbjdzk4cW4s80wmPbi7L+PpruWqCvhv40UBAfcQpyM7LU49V54PsAkWusw5I9wa2uwt2rj4COlV9abdtjkm8xDCdtm9AMw257gEYMxxu6mtki8EilzdVeq7Ov1CadYUj9NOlVQ2kmZdDJliYFc+DvTlMVYsm5PjeA8R3WzPwT5stQgT9u0a+6bti9M0mQR/0LLX3IHSSb2kpj1sQT49jYRM6IRCF5NmK9vQZ2qtqcbvgJBJtrKCfejwMHYcwOyo5dvoYYuzdWFK0o3Y9G6qMjWcuGY0mk8P4sfZVgHmwYZRXYygonDFxY3G3oOust4OTos0P6a6Ew1ayhGu/PKGqrh9vtIibjveUbB58MbLNC+hhaYBakViGRq7iVrJmgiaHudjLU6yGqFAx9oGDoTo4DpeuUfq1rFQ+xdFf8vb12ppZt2UJce5CjiOCyZynjJwVu8sm35YW/7MW4oCGxur92OtA2TqL6ABKX6G/SA7511GDbahKfHk2enKXxkXtt/GVCWCC1v5oWYniBEbnLmYmcqCkgbqjGZU8Ir7PedvHrWanZL4OzPSAw7FKxUSgsKsXM2TuVoVBCh9ALOUtsLk+HA4K4Rcbm8lD3Cw==" >> ~/.ssh/known_hosts
+            echo "|1|Fn/bfEPkPsUH/ULE0akBo0OGXIc=|303i73M1syNvvwQuC3OiQb8KrB8= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS+0l0PXnJ/bAtBAXwV/WUMTD2FqaoY07Bsvgh0b3yHnfaPHrxIRneX4V/8v1WMHZbNIfF6mPHbjdzk4cW4s80wmPbi7L+PpruWqCvhv40UBAfcQpyM7LU49V54PsAkWusw5I9wa2uwt2rj4COlV9abdtjkm8xDCdtm9AMw257gEYMxxu6mtki8EilzdVeq7Ov1CadYUj9NOlVQ2kmZdDJliYFc+DvTlMVYsm5PjeA8R3WzPwT5stQgT9u0a+6bti9M0mQR/0LLX3IHSSb2kpj1sQT49jYRM6IRCF5NmK9vQZ2qtqcbvgJBJtrKCfejwMHYcwOyo5dvoYYuzdWFK0o3Y9G6qMjWcuGY0mk8P4sfZVgHmwYZRXYygonDFxY3G3oOust4OTos0P6a6Ew1ayhGu/PKGqrh9vtIibjveUbB58MbLNC+hhaYBakViGRq7iVrJmgiaHudjLU6yGqFAx9oGDoTo4DpeuUfq1rFQ+xdFf8vb12ppZt2UJce5CjiOCyZynjJwVu8sm35YW/7MW4oCGxur92OtA2TqL6ABKX6G/SA7511GDbahKfHk2enKXxkXtt/GVCWCC1v5oWYniBEbnLmYmcqCkgbqjGZU8Ir7PedvHrWanZL4OzPSAw7FKxUSgsKsXM2TuVoVBCh9ALOUtsLk+HA4K4Rcbm8lD3Cw==" >> ~/.ssh/known_hosts
+            apt update && apt install curl git -y
+            curl -O https://cli-dl.scalingo.com/install && bash install
+            scalingo login --api-token $SCALINGO_API_TOKEN
+            git remote add pc-logstash git@ssh.osc-fr1.scalingo.com:pc-logstash.git
+            git push -f pc-logstash master
 
 workflows:
   version: 2.1
@@ -38,3 +70,13 @@ workflows:
     jobs:
       - purge-elasticsearch-indices-staging
       - purge-elasticsearch-indices-production
+  deploy-logstash-staging:
+    jobs:
+      - deploy-logstash-staging
+  deploy-logstash-production:
+    jobs:
+      - deploy-logstash-production:
+          filters:
+            branches:
+              only:
+                - master
