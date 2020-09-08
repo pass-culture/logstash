@@ -72,13 +72,13 @@ workflows:
       - purge-elasticsearch-indices-production:
           requires:
             - purge-elasticsearch-indices-staging
-#  deploy-logstash:
-#    jobs:
-#      - deploy-logstash-staging
-#      - deploy-logstash-production:
-#          requires:
-#            - deploy-logstash-staging
-#          filters:
-#            branches:
-#              only:
-#                - master
+  deploy-logstash:
+    jobs:
+      - deploy-logstash-staging
+      - deploy-logstash-production:
+          requires:
+            - deploy-logstash-staging
+          filters:
+            branches:
+              only:
+                - master
