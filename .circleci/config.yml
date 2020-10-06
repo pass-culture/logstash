@@ -4,6 +4,9 @@ jobs:
   purge-elasticsearch-indices-staging:
     docker:
       - image: ubuntu:20.04
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - run:
@@ -16,6 +19,9 @@ jobs:
   purge-elasticsearch-indices-production:
     docker:
       - image: ubuntu:20.04
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - run:
@@ -28,6 +34,9 @@ jobs:
   deploy-logstash-staging:
     docker:
       - image: ubuntu:20.04
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - run:
@@ -44,6 +53,9 @@ jobs:
   deploy-logstash-production:
     docker:
       - image: ubuntu:20.04
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - run:
