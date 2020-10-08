@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: ubuntu:20.04
         auth:
-          username: mydockerhub-user
+          username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
@@ -20,7 +20,7 @@ jobs:
     docker:
       - image: ubuntu:20.04
         auth:
-          username: mydockerhub-user
+          username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
@@ -35,7 +35,7 @@ jobs:
     docker:
       - image: ubuntu:20.04
         auth:
-          username: mydockerhub-user
+          username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
@@ -54,7 +54,7 @@ jobs:
     docker:
       - image: ubuntu:20.04
         auth:
-          username: mydockerhub-user
+          username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
